@@ -23,7 +23,7 @@ public class EscrowService {
                 request.getBuyer(),
                 request.getSeller(),
                 request.getAmount(),
-                "PENDING"
+                "CREATED"
         );
 
         escrowStorage.put(uniqueId, newEscrow);

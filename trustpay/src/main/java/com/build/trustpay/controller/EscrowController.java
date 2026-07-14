@@ -7,16 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/escrows")
 public class EscrowController {
+
 
     private final EscrowService escrowService;
 
     // Spring automatically injects the EscrowService here
     public EscrowController(EscrowService escrowService) {
         this.escrowService = escrowService;
+        System.out.println(">>> EscrowController CREATED <<<");
     }
 
     // POST http://localhost:8080/api/escrows
