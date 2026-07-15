@@ -1,19 +1,44 @@
-package com.build.trustpay.dto;
-
-import java.math.BigDecimal;
+package com.trustpay.dto;
 
 public class CreateEscrowRequest {
-    private String buyer;
-    private String seller;
-    private BigDecimal amount;
 
-    public String getBuyer() { return buyer; }
-    public void setBuyer(String buyer) { this.buyer = buyer; }
+    private String buyerName;
+    private String sellerName;
+    private Double amount;
+    private String description;
 
-    public String getSeller() { return seller; }
-    public void setSeller(String seller) { this.seller = seller; }
+    public CreateEscrowRequest() {
+    }
 
-    public BigDecimal getAmount() { return amount; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public String getSellerName() {
+        return sellerName;
+    }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
-
