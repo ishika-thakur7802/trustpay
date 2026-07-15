@@ -1,46 +1,46 @@
-package com.trustpay.service;
+package com.build.trustpay.service;
 
-import com.trustpay.dto.CreateEscrowRequest;
-import com.trustpay.model.Escrow;
-import com.trustpay.model.EscrowStatus;
+import com.build.trustpay.dto.CreateEscrowRequest;
+import com.build.trustpay.model.Escrow;
+import com.build.trustpay.model.EscrowStatus;
+import com.build.trustpay.repository.EscrowRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EscrowService {
 
-    private final List<Escrow> escrows = new ArrayList<>();
-    private Long nextId = 1L;
+    private final EscrowRepository escrowRepository;
+
+    // Spring automatically injects your EscrowRepository here
+    public EscrowService(EscrowRepository escrowRepository) {
+        this.escrowRepository = escrowRepository;
+    }
 
     public Escrow createEscrow(CreateEscrowRequest request) {
-
-        Escrow escrow = new Escrow();
-
-        escrow.setId(nextId++);
-        escrow.setBuyerName(request.getBuyerName());
-        escrow.setSellerName(request.getSellerName());
-        escrow.setAmount(request.getAmount());
-        escrow.setDescription(request.getDescription());
-        escrow.setStatus(EscrowStatus.CREATED);
-        escrow.setCreatedAt(LocalDateTime.now());
-
-        escrows.add(escrow);
-
-        return escrow;
+        Escrow escrow = new Escrow(
+                request.getBuyerAddress(),
+                request.getSellerAddress(),
+                request.getAmount(),
+                request.getDescription()
+        );
+        return escrowRepository.save(escrow);
     }
 
     public List<Escrow> getAllEscrows() {
-        return escrows;
+        return escrowRepository.findAll();
     }
 
     public Escrow getEscrowById(Long id) {
+        return escrowRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Escrow not found with ID: " + id));
+    }
 
-        return escrows.stream()
-                .filter(e -> e.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Escrow updateStatus(Long id, EscrowStatus newStatus) {
+        Escrow escrow = getEscrowById(id);
+        escrow.setStatus(newStatus);
+        return escrowRepository.save(escrow);
     }
 }

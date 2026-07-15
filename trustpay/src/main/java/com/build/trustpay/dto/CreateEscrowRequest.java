@@ -1,4 +1,4 @@
-package com.trustpay.dto;
+package com.build.trustpay.dto;
 
 public class CreateEscrowRequest {
 
