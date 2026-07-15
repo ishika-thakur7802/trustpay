@@ -1,36 +1,45 @@
 package com.build.trustpay.dto;
 
+import java.math.BigDecimal;
+
 public class CreateEscrowRequest {
 
-    private String buyerName;
-    private String sellerName;
-    private Double amount;
+    private String buyerAddress;
+    private String sellerAddress;
+    private BigDecimal amount;
     private String description;
 
-    public CreateEscrowRequest() {
+    // Default constructor is required by Spring Boot to automatically map JSON payloads into this Java object
+    public CreateEscrowRequest() {}
+
+    public CreateEscrowRequest(String buyerAddress, String sellerAddress, BigDecimal amount, String description) {
+        this.buyerAddress = buyerAddress;
+        this.sellerAddress = sellerAddress;
+        this.amount = amount;
+        this.description = description;
     }
 
-    public String getBuyerName() {
-        return buyerName;
+    public String getBuyerAddress() {
+        return buyerAddress;
     }
 
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
+    public void setBuyerAddress(String buyerAddress) {
+        this.buyerAddress = buyerAddress;
     }
 
-    public String getSellerName() {
-        return sellerName;
+    public String getSellerAddress() {
+        return sellerAddress;
     }
 
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
+    public void setSellerAddress(String sellerAddress) {
+        this.sellerAddress = sellerAddress;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
