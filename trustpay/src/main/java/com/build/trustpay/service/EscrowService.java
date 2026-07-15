@@ -1,40 +1,46 @@
-package com.build.trustpay.service;
+package com.trustpay.service;
 
-import com.build.trustpay.dto.CreateEscrowRequest;
-import com.build.trustpay.model.Escrow;
+import com.trustpay.dto.CreateEscrowRequest;
+import com.trustpay.model.Escrow;
+import com.trustpay.model.EscrowStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class EscrowService {
 
-    private final Map<String, Escrow> escrowStorage = new ConcurrentHashMap<>();
+    private final List<Escrow> escrows = new ArrayList<>();
+    private Long nextId = 1L;
 
     public Escrow createEscrow(CreateEscrowRequest request) {
-        String uniqueId = UUID.randomUUID().toString();
 
-        Escrow newEscrow = new Escrow(
-                uniqueId,
-                request.getBuyer(),
-                request.getSeller(),
-                request.getAmount(),
-                "CREATED"
-        );
+        Escrow escrow = new Escrow();
 
-        escrowStorage.put(uniqueId, newEscrow);
-        return newEscrow;
+        escrow.setId(nextId++);
+        escrow.setBuyerName(request.getBuyerName());
+        escrow.setSellerName(request.getSellerName());
+        escrow.setAmount(request.getAmount());
+        escrow.setDescription(request.getDescription());
+        escrow.setStatus(EscrowStatus.CREATED);
+        escrow.setCreatedAt(LocalDateTime.now());
+
+        escrows.add(escrow);
+
+        return escrow;
     }
 
     public List<Escrow> getAllEscrows() {
-        return new ArrayList<>(escrowStorage.values());
+        return escrows;
     }
 
-    public Escrow getEscrowById(String id) {
-        return escrowStorage.get(id);
+    public Escrow getEscrowById(Long id) {
+
+        return escrows.stream()
+                .filter(e -> e.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 }
