@@ -1,129 +1,191 @@
 import { useState } from "react";
+import api from "../services/api";
+
 function CreateEscrow() {
-  const [title, setTitle] = useState("");
-const [sellerWallet, setSellerWallet] = useState("");
-const [amount, setAmount] = useState("");
-const [description, setDescription] = useState("");
+  const [formData, setFormData] = useState({
+    buyerAddress: "",
+    sellerAddress: "",
+    amount: "",
+    description: "",
+  });
 
-const [errors, setErrors] = useState({});
-const handleSubmit = () => {
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  if (validateForm()) {
-    alert("Escrow Created Successfully!");
-  }
+  // Updates form fields
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-};
+  // Form Validation
+  const validateForm = () => {
+    let newErrors = {};
 
-const validateForm = () => {
-  let newErrors = {};
+    if (formData.buyerAddress.trim() === "") {
+      newErrors.buyerAddress = "Buyer wallet is required";
+    }
 
-  // Title validation
-  if (title.trim() === "") {
-    newErrors.title = "Title is required";
-  }
+    if (formData.sellerAddress.trim() === "") {
+      newErrors.sellerAddress = "Seller wallet is required";
+    }
 
-  // Seller wallet validation
-  if (sellerWallet.trim() === "") {
-    newErrors.sellerWallet = "Seller wallet is required";
-  }
+    if (formData.amount === "" || Number(formData.amount) <= 0) {
+      newErrors.amount = "Amount must be greater than 0";
+    }
 
-  // Amount validation
-  if (amount === "" || Number(amount) <= 0) {
-    newErrors.amount = "Amount must be greater than 0";
-  }
+    if (formData.description.trim() === "") {
+      newErrors.description = "Description is required";
+    }
 
-  // Save errors
-  setErrors(newErrors);
+    setErrors(newErrors);
 
-  // Return true if no errors
-  return Object.keys(newErrors).length === 0;
-};
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Submit Form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setLoading(true);
+
+    try {
+      const response = await api.post("/api/escrows", formData);
+
+      console.log("Escrow Created:", response.data);
+
+      alert("Escrow Created Successfully!");
+
+      // Clear Form
+      setFormData({
+        buyerAddress: "",
+        sellerAddress: "",
+        amount: "",
+        description: "",
+      });
+
+      setErrors({});
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to create escrow.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div>
-      <h1>Create Escrow</h1>
+    <div className="max-w-xl mx-auto p-6">
 
-      <form>
+      <h1 className="text-3xl font-bold mb-6">
+        Create Escrow
+      </h1>
 
-        <div>
-          <label>Title</label>
-          <br />
-          <input 
+      <form onSubmit={handleSubmit}>
+
+        {/* Buyer Wallet */}
+
+        <div className="mb-4">
+
+          <label>Buyer Wallet Address</label>
+
+          <input
+            className="border p-2 rounded w-full"
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            name="buyerAddress"
+            value={formData.buyerAddress}
+            onChange={handleChange}
           />
-          {
-          errors.title && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.title}
+
+          {errors.buyerAddress && (
+            <p className="text-red-500">
+              {errors.buyerAddress}
             </p>
-          )
-        }
+          )}
+
         </div>
 
-        <br />
+        {/* Seller Wallet */}
 
-        <div>
+        <div className="mb-4">
+
           <label>Seller Wallet Address</label>
-          <br />
-         <input 
+
+          <input
+            className="border p-2 rounded w-full"
             type="text"
-            value={sellerWallet}
-            onChange={(e) => setSellerWallet(e.target.value)}
+            name="sellerAddress"
+            value={formData.sellerAddress}
+            onChange={handleChange}
           />
-          {
-            errors.sellerWallet && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.sellerWallet}
-              </p>
-            )
-          }
+
+          {errors.sellerAddress && (
+            <p className="text-red-500">
+              {errors.sellerAddress}
+            </p>
+          )}
+
         </div>
 
-        <br />
+        {/* Amount */}
 
-        <div>
+        <div className="mb-4">
+
           <label>Amount</label>
-          <br />
-          <input 
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+
+          <input
+            className="border p-2 rounded w-full"
+            type="number"
+            name="amount"
+            value={formData.amount}
+            onChange={handleChange}
           />
-          {
-            errors.amount && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.amount}
-              </p>
-            )
-          }
+
+          {errors.amount && (
+            <p className="text-red-500">
+              {errors.amount}
+            </p>
+          )}
+
         </div>
 
-        <br />
+        {/* Description */}
 
-        <div>
+        <div className="mb-4">
+
           <label>Description</label>
-          <br />
-          <textarea
-            rows="4"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-        />
-        </div>
 
-        <br />
+          <textarea
+            className="border p-2 rounded w-full"
+            rows="4"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+          />
+
+          {errors.description && (
+            <p className="text-red-500">
+              {errors.description}
+            </p>
+          )}
+
+        </div>
 
         <button
-          type="button"
-          onClick={handleSubmit}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 text-white px-6 py-3 rounded"
         >
-          Create Escrow
+          {loading ? "Creating..." : "Create Escrow"}
         </button>
 
       </form>
-       {/* Live Preview */}
+
+      {/* Live Preview */}
 
       <div className="mt-10 border rounded-lg p-5">
 
@@ -132,19 +194,19 @@ const validateForm = () => {
         </h2>
 
         <p>
-          <strong>Title:</strong> {title}
+          <strong>Buyer:</strong> {formData.buyerAddress}
         </p>
 
         <p>
-          <strong>Seller Wallet:</strong> {sellerWallet}
+          <strong>Seller:</strong> {formData.sellerAddress}
         </p>
 
         <p>
-          <strong>Amount:</strong> {amount}
+          <strong>Amount:</strong> {formData.amount}
         </p>
 
         <p>
-          <strong>Description:</strong> {description}
+          <strong>Description:</strong> {formData.description}
         </p>
 
       </div>
