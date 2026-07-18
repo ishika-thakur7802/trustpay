@@ -1,0 +1,30 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// Buyer wallet
+export ledger buyer: Opaque<"string">;
+
+// Seller wallet
+export ledger seller: Opaque<"string">;
+
+// Escrow amount
+export ledger amount: Uint<64>;
+
+// Status
+// 0 = CREATED
+export ledger status: Uint<8>;
+
+export circuit createEscrow(
+    newBuyer: Opaque<"string">,
+    newSeller: Opaque<"string">,
+    newAmount: Uint<64>
+): [] {
+
+    buyer = disclose(newBuyer);
+    seller = disclose(newSeller);
+
+    amount = disclose(newAmount);
+
+    status = 0;
+}

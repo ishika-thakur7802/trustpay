@@ -5,30 +5,30 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "escrows") // This names the table in your database
+@Table(name = "escrows")
 public class Escrow {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Automatically counts up (1, 2, 3...) for each new escrow
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String buyerAddress;
     private String sellerAddress;
 
     @Column(precision = 19, scale = 4)
-    private BigDecimal amount; // Best practice to use BigDecimal for currency/token amounts instead of double
+    private BigDecimal amount;
 
     private String description;
 
-    @Enumerated(EnumType.STRING) // Saves the status as a readable string ("CREATED") instead of a number (0)
+    @Enumerated(EnumType.STRING)
     private EscrowStatus status;
 
     private LocalDateTime createdAt;
 
-    // Default constructor is REQUIRED by JPA/Hibernate
+
     public Escrow() {}
 
-    // Convenience constructor for creating a new Escrow
+
     public Escrow(String buyerAddress, String sellerAddress, BigDecimal amount, String description) {
         this.buyerAddress = buyerAddress;
         this.sellerAddress = sellerAddress;
@@ -38,7 +38,7 @@ public class Escrow {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters (IntelliJ can generate these automatically, or you can write them out)
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
