@@ -1,6 +1,4 @@
-/**
- * Deploy Hello World contract to Midnight Preprod network
- */
+console.log("A");
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import * as fs from 'node:fs';
@@ -9,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { WebSocket } from 'ws';
 import * as Rx from 'rxjs';
 import { Buffer } from 'buffer';
-
+console.log("A");
 // Midnight SDK imports
 import { deployContract } from '@midnight-ntwrk/midnight-js-contracts';
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
@@ -30,9 +28,10 @@ import { recordDeployment } from "./network";
 // Enable WebSocket for GraphQL subscriptions
 // @ts-expect-error Required for wallet sync
 globalThis.WebSocket = WebSocket;
-
+console.log("B");
 // Set network to preprod
 setNetworkId('preprod');
+
 
 // Preprod network configuration
 const CONFIG = {
@@ -52,8 +51,10 @@ const zkConfigPath = path.resolve(
 );
 // Load compiled contract
 const contractPath = path.join(zkConfigPath, 'contract', 'index.js');
+console.log("STEP 1 - Before dynamic import");
 const Escrow = await import(pathToFileURL(contractPath).href);
-
+console.log("STEP 2 - After dynamic import");
+console.log("STEP 3 - Before CompiledContract.make");
 const compiledContract = CompiledContract.make(
     'escrow',
     Escrow.Contract
@@ -62,7 +63,7 @@ const compiledContract = CompiledContract.make(
     CompiledContract.withVacantWitnesses,
     CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
-
+console.log("STEP 4 - After CompiledContract.make");
 // ─── Wallet Functions ──────────────────────────────────────────────────────────
 
 function deriveKeys(seed: string) {
@@ -175,6 +176,7 @@ async function createProviders(walletCtx: Awaited<ReturnType<typeof createWallet
 // ─── Main Deploy Script ────────────────────────────────────────────────────────
 
 async function main() {
+    console.log("STEP 5 - Inside main");
   console.log('\n╔══════════════════════════════════════════════════════════════╗');
   console.log('║            Deploy TrustPay Escrow Contract                   ║');
   console.log('╚══════════════════════════════════════════════════════════════╝\n');

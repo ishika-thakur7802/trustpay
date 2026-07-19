@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b03ff96b-690d-4aae-8edf-5c7a1055a94d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trustpay-midnight/src/cli.ts" beforeDir="false" afterPath="$PROJECT_DIR$/trustpay-midnight/src/cli.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trustpay-midnight/src/deploy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/trustpay-midnight/src/deploy.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
