@@ -26,7 +26,7 @@ import { HDWallet, Roles, generateRandomSeed } from '@midnight-ntwrk/wallet-sdk-
 import { ShieldedWallet } from '@midnight-ntwrk/wallet-sdk-shielded';
 import { createKeystore, InMemoryTransactionHistoryStorage, PublicKey, UnshieldedWallet } from '@midnight-ntwrk/wallet-sdk-unshielded-wallet';
 import { CompiledContract } from '@midnight-ntwrk/compact-js';
-
+import { recordDeployment } from "./network";
 // Enable WebSocket for GraphQL subscriptions
 // @ts-expect-error Required for wallet sync
 globalThis.WebSocket = WebSocket;
@@ -43,15 +43,24 @@ const CONFIG = {
 };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const zkConfigPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'hello-world');
-
+const zkConfigPath = path.resolve(
+  __dirname,
+  '..',
+  'contracts',
+  'managed',
+  'escrow'
+);
 // Load compiled contract
 const contractPath = path.join(zkConfigPath, 'contract', 'index.js');
-const HelloWorld = await import(pathToFileURL(contractPath).href);
+const Escrow = await import(pathToFileURL(contractPath).href);
 
-const compiledContract = CompiledContract.make('hello-world', HelloWorld.Contract).pipe(
-  CompiledContract.withVacantWitnesses,
-  CompiledContract.withCompiledFileAssets(zkConfigPath),
+const compiledContract = CompiledContract.make(
+    'escrow',
+    Escrow.Contract
+)
+.pipe(
+    CompiledContract.withVacantWitnesses,
+    CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
 
 // ─── Wallet Functions ──────────────────────────────────────────────────────────
@@ -151,7 +160,7 @@ async function createProviders(walletCtx: Awaited<ReturnType<typeof createWallet
 
   return {
     privateStateProvider: levelPrivateStateProvider({
-      privateStateStoreName: 'hello-world-state',
+      privateStateStoreName: 'escrow-state',
       accountId,
       privateStoragePasswordProvider: () => `${Buffer.from(accountId, 'hex').toString('base64')}!`,
     }),
@@ -167,7 +176,7 @@ async function createProviders(walletCtx: Awaited<ReturnType<typeof createWallet
 
 async function main() {
   console.log('\n╔══════════════════════════════════════════════════════════════╗');
-  console.log('║           Deploy Hello World to Midnight Preprod             ║');
+  console.log('║            Deploy TrustPay Escrow Contract                   ║');
   console.log('╚══════════════════════════════════════════════════════════════╝\n');
 
   // Check if contract is compiled
@@ -269,7 +278,7 @@ async function main() {
     console.log('  Deploying contract (this may take 30-60 seconds)...\n');
     const deployed = await deployContract(providers, {
       compiledContract,
-      privateStateId: 'helloWorldState',
+      privateStateId: 'escrowState',
       initialPrivateState: {},
     });
 
@@ -278,19 +287,17 @@ async function main() {
     console.log(`  Contract Address: ${contractAddress}\n`);
 
     // 5. Save deployment info
-    const deploymentInfo = {
-      contractAddress,
-      seed,
-      network: 'preprod',
-      deployedAt: new Date().toISOString(),
-    };
+recordDeployment(
+    "preprod",
+    contractAddress,
+    address.toString()
+);
 
-    fs.writeFileSync('deployment.json', JSON.stringify(deploymentInfo, null, 2));
-    console.log('  Saved to deployment.json\n');
+console.log("Deployment saved.");
 
     await walletCtx.wallet.stop();
     console.log('─── Deployment Complete! ───────────────────────────────────────\n');
-    console.log('  Next: Run `npm run cli` to interact with your contract.\n');
+    console.log('  Next: Run `npm run cli` to create and manage escrows.\n');
   } finally {
     rl.close();
   }
