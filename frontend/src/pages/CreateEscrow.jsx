@@ -12,7 +12,6 @@ function CreateEscrow() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Updates form fields
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -20,7 +19,6 @@ function CreateEscrow() {
     });
   };
 
-  // Form Validation
   const validateForm = () => {
     let newErrors = {};
 
@@ -45,7 +43,6 @@ function CreateEscrow() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit Form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,7 +57,6 @@ function CreateEscrow() {
 
       alert("Escrow Created Successfully!");
 
-      // Clear Form
       setFormData({
         buyerAddress: "",
         sellerAddress: "",
@@ -71,7 +67,6 @@ function CreateEscrow() {
       setErrors({});
     } catch (error) {
       console.error(error);
-
       alert("Failed to create escrow.");
     } finally {
       setLoading(false);
@@ -79,135 +74,132 @@ function CreateEscrow() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto py-8">
 
-      <h1 className="text-3xl font-bold mb-6">
-        Create Escrow
-      </h1>
+      {/* Page Heading */}
 
-      <form onSubmit={handleSubmit}>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-slate-800">
+          Create Escrow
+        </h1>
 
-        {/* Buyer Wallet */}
+        <p className="text-gray-500 mt-2">
+          Securely create a new escrow agreement between buyer and seller.
+        </p>
+      </div>
 
-        <div className="mb-4">
+      {/* Form Card */}
 
-          <label>Buyer Wallet Address</label>
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
 
-          <input
-            className="border p-2 rounded w-full"
-            type="text"
-            name="buyerAddress"
-            value={formData.buyerAddress}
-            onChange={handleChange}
-          />
-
-          {errors.buyerAddress && (
-            <p className="text-red-500">
-              {errors.buyerAddress}
-            </p>
-          )}
-
-        </div>
-
-        {/* Seller Wallet */}
-
-        <div className="mb-4">
-
-          <label>Seller Wallet Address</label>
-
-          <input
-            className="border p-2 rounded w-full"
-            type="text"
-            name="sellerAddress"
-            value={formData.sellerAddress}
-            onChange={handleChange}
-          />
-
-          {errors.sellerAddress && (
-            <p className="text-red-500">
-              {errors.sellerAddress}
-            </p>
-          )}
-
-        </div>
-
-        {/* Amount */}
-
-        <div className="mb-4">
-
-          <label>Amount</label>
-
-          <input
-            className="border p-2 rounded w-full"
-            type="number"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-          />
-
-          {errors.amount && (
-            <p className="text-red-500">
-              {errors.amount}
-            </p>
-          )}
-
-        </div>
-
-        {/* Description */}
-
-        <div className="mb-4">
-
-          <label>Description</label>
-
-          <textarea
-            className="border p-2 rounded w-full"
-            rows="4"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-          />
-
-          {errors.description && (
-            <p className="text-red-500">
-              {errors.description}
-            </p>
-          )}
-
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-3 rounded"
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6"
         >
-          {loading ? "Creating..." : "Create Escrow"}
-        </button>
 
-      </form>
+          {/* Buyer */}
 
-      {/* Live Preview */}
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Buyer Wallet Address
+            </label>
 
-      <div className="mt-10 border rounded-lg p-5">
+            <input
+              type="text"
+              name="buyerAddress"
+              value={formData.buyerAddress}
+              onChange={handleChange}
+              placeholder="Enter buyer wallet address"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-        <h2 className="text-xl font-semibold mb-4">
-          Current Form Data
-        </h2>
+            {errors.buyerAddress && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.buyerAddress}
+              </p>
+            )}
+          </div>
 
-        <p>
-          <strong>Buyer:</strong> {formData.buyerAddress}
-        </p>
+          {/* Seller */}
 
-        <p>
-          <strong>Seller:</strong> {formData.sellerAddress}
-        </p>
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Seller Wallet Address
+            </label>
 
-        <p>
-          <strong>Amount:</strong> {formData.amount}
-        </p>
+            <input
+              type="text"
+              name="sellerAddress"
+              value={formData.sellerAddress}
+              onChange={handleChange}
+              placeholder="Enter seller wallet address"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-        <p>
-          <strong>Description:</strong> {formData.description}
-        </p>
+            {errors.sellerAddress && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.sellerAddress}
+              </p>
+            )}
+          </div>
+
+          {/* Amount */}
+
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Escrow Amount (₹)
+            </label>
+
+            <input
+              type="number"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              placeholder="Enter escrow amount"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            {errors.amount && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.amount}
+              </p>
+            )}
+          </div>
+
+          {/* Description */}
+
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Description
+            </label>
+
+            <textarea
+              rows="5"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe the work or service..."
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.description}
+              </p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-200 text-white py-3 rounded-xl font-semibold shadow-lg disabled:bg-blue-300"
+          >
+            {loading ? "Creating Escrow..." : "Create Escrow"}
+          </button>
+
+        </form>
 
       </div>
 

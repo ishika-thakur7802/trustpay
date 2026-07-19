@@ -1,63 +1,5 @@
-// import { useEffect, useState } from "react";
-// import EscrowCard from "../components/EscrowCard.jsx";
-// import api from "../services/api.js";
-// function Dashboard() {
-//   const [status, setStatus] = useState("Checking...");
-
-//   useEffect(() => {
-//     api.get("/health")
-//       .then(() => {
-//         setStatus("🟢 Backend Connected");
-//       })
-//       .catch(() => {
-//         setStatus("🔴 Backend Offline");
-//       });
-//   }, []);
-
-//   return (
-//    <div className="p-8">
-
-//     <h1 className="text-3xl font-bold mb-6">
-//         Dashboard
-//     </h1>
-
-//     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-//    <EscrowCard
-//     title="Laptop Purchase"
-//     amount="5000"
-//     seller="0xABC123"
-//     status="FUNDED"
-// />
-
-// <EscrowCard
-//     title="Website Development"
-//     amount="15000"
-//     seller="0xXYZ987"
-//     status="CREATED"
-// />
-
-// <EscrowCard
-//     title="Logo Design"
-//     amount="2000"
-//     seller="0xAAA111"
-//     status="RELEASED"
-// />
-
-// <EscrowCard
-//     title="Marketing Campaign"
-//     amount="9000"
-//     seller="0xBBB222"
-//     status="CANCELLED"
-// />
-// </div>
-
-// </div>
-//   );
-// }
-
-// export default Dashboard;
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import EscrowCard from "../components/EscrowCard";
 import Loader from "../components/Loader";
 import api from "../services/api";
@@ -74,8 +16,6 @@ function Dashboard() {
   const fetchEscrows = async () => {
     try {
       const response = await api.get("/api/escrows");
-      console.log("Escrows:", response.data);
-      console.log("First escrow:", response.data[0]);
       setEscrows(response.data);
     } catch (err) {
       console.error(err);
@@ -86,58 +26,94 @@ function Dashboard() {
   };
 
   if (loading) {
-    return <Loader message="Fetching Escrows..." />;
+    return <Loader message="Loading escrows..." />;
   }
 
   if (error) {
     return (
-      <div className="p-8">
-        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-        <p className="text-red-500">{error}</p>
+      <div className="p-10 text-red-500 text-xl">
+        {error}
       </div>
     );
   }
 
-  if (escrows.length === 0) {
-    return (
-      <div className="p-8">
-        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+  return (
+    <div className="min-h-screen bg-slate-900 text-white p-10">
 
-        <div className="border rounded-lg p-6 bg-gray-50">
-          <h2 className="text-xl font-semibold">
-            No Escrows Found
-          </h2>
+      {/* Header */}
 
-          <p className="text-gray-600 mt-2">
-            Create your first escrow to see it here.
+      <div className="flex justify-between items-center mb-10">
+
+        <div>
+          <h1 className="text-4xl font-bold text-sky-400">
+            Dashboard
+          </h1>
+
+          <p className="text-slate-400 mt-2">
+            Manage all your escrow contracts securely.
           </p>
         </div>
-      </div>
-    );
-  }
-console.log("Escrows State:", escrows);
-console.log("Number of escrows:", escrows.length);
-  return (
-    <div className="p-8">
 
-      <h1 className="text-3xl font-bold mb-6">
-        Dashboard
-      </h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-       {escrows.map((escrow) => {
-  console.log("Rendering:", escrow);
-
-  return (
-    <EscrowCard
-      key={escrow.id}
-      escrow={escrow}
-    />
-  );
-})}
+        <Link
+          to="/create"
+          className="bg-sky-500 hover:bg-sky-600 px-5 py-3 rounded-xl font-semibold transition"
+        >
+          + Create Escrow
+        </Link>
 
       </div>
+
+      {/* Stats */}
+
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+        <div className="bg-slate-800 rounded-xl p-6 shadow">
+          <p className="text-slate-400">Total Escrows</p>
+          <h2 className="text-4xl font-bold mt-2">
+            {escrows.length}
+          </h2>
+        </div>
+
+        <div className="bg-slate-800 rounded-xl p-6 shadow">
+          <p className="text-slate-400">Active</p>
+          <h2 className="text-4xl font-bold text-blue-400 mt-2">
+            {escrows.filter(e => e.status === "ACTIVE").length}
+          </h2>
+        </div>
+
+        <div className="bg-slate-800 rounded-xl p-6 shadow">
+          <p className="text-slate-400">Released</p>
+          <h2 className="text-4xl font-bold text-green-400 mt-2">
+            {escrows.filter(e => e.status === "RELEASED").length}
+          </h2>
+        </div>
+
+      </div>
+
+      {/* Escrows */}
+
+      {escrows.length === 0 ? (
+        <div className="bg-slate-800 rounded-xl p-12 text-center">
+
+          <h2 className="text-2xl font-semibold">
+            No Escrows Yet
+          </h2>
+
+          <p className="text-slate-400 mt-3">
+            Create your first escrow to begin.
+          </p>
+
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-2 gap-8">
+          {escrows.map((escrow) => (
+            <EscrowCard
+              key={escrow.id}
+              escrow={escrow}
+            />
+          ))}
+        </div>
+      )}
 
     </div>
   );
