@@ -147,7 +147,7 @@ function CreateEscrow() {
 
           <div>
             <label className="block mb-2 font-medium text-gray-700">
-              Escrow Amount (₹)
+              Escrow Amount
             </label>
 
             <input

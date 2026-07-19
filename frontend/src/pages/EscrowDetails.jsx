@@ -128,7 +128,7 @@ console.log("Wallet connected:", connected);
             </p>
 
             <p className="text-2xl font-bold text-green-400">
-              ₹{escrow.amount}
+              {escrow.amount}
             </p>
           </div>
 

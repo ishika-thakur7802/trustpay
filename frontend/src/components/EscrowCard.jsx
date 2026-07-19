@@ -12,7 +12,7 @@ function EscrowCard({ escrow }) {
       </h2>
 
       <p className="mt-3">
-        💰 Amount: ₹{escrow.amount}
+        💰 Amount: {escrow.amount}
       </p>
 
       <p className="mt-2">
